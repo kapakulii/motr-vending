@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MOTR — план продаж</title>
+  <style>
+    :root { --bg:#10151d; --panel:#18212d; --soft:#222e3d; --line:#34445a; --text:#eef4ff; --muted:#9eafc7; --accent:#64d7a2; --gold:#ffc85a; --danger:#ff8c8c; }
+    * { box-sizing:border-box } body { margin:0; font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--text); background:linear-gradient(130deg,#10151d,#152233 65%,#10241e); }
+    main { max-width:1420px; margin:auto; padding:34px 24px 60px } h1 { margin:0; font-size:clamp(28px,4vw,44px); letter-spacing:-.04em } h2 { font-size:19px; margin:0 0 14px } p { margin:6px 0; color:var(--muted) }
+    .hero,.card,.drop { background:rgba(24,33,45,.92); border:1px solid var(--line); border-radius:16px; box-shadow:0 20px 70px #0003 } .hero { padding:26px; display:flex; justify-content:space-between; gap:20px; align-items:flex-start }
+    .badge { display:inline-block; padding:5px 9px; border:1px solid #4a685d; color:var(--accent); background:#153428; border-radius:99px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.07em }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px } .drop { position:relative;padding:20px; min-height:148px; border-style:dashed; transition:.15s; cursor:pointer } .drop:hover,.drop.drag { border-color:var(--accent); background:#17362a } .drop input { display:none }.drop-icon{display:none}.drop-hint{display:inline-block;margin:12px 0 6px;font-weight:750;color:var(--text)}.drop small{display:block;color:var(--muted)}.clear-upload{display:none;width:auto;height:auto;padding:2px 0;border:0;border-radius:0;font-size:12px;font-weight:650;line-height:1;background:transparent;color:#9a5c5c;text-decoration:underline;text-underline-offset:3px}.clear-upload:hover{background:transparent;color:#8b3333}.drop.loaded .clear-upload{display:inline-block}
+    button,.pick { appearance:none; border:0; border-radius:9px; padding:10px 13px; font:inherit; color:var(--text); background:var(--soft); cursor:pointer; font-weight:650 } button:hover,.pick:hover { filter:brightness(1.13) } button.primary { color:#082116; background:var(--accent) } button.danger { color:#4d1212; background:var(--danger) } button:disabled { opacity:.45; cursor:not-allowed }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end }.status { margin-top:13px; font-size:13px; color:var(--muted) }.ok { color:var(--accent) }.warning { color:var(--gold) }.error { color:var(--danger) }
+    .stats { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin:18px 0 } .card { padding:17px }.number { margin-top:5px; font-size:28px; font-weight:800; letter-spacing:-.04em; color:var(--gold) }.label { color:var(--muted); font-size:13px }
+    .toolbar { margin:20px 0 10px }.table-wrap { overflow:auto; border:1px solid var(--line); border-radius:13px; background:var(--panel) } table { border-collapse:collapse; width:100%; min-width:970px; font-size:13px } th,td { padding:7px 9px; text-align:left; border-bottom:1px solid #2a3749; vertical-align:middle } th { position:sticky; top:0; background:#202c3b; color:#b9c9df; font-size:11px; text-transform:uppercase; letter-spacing:.045em } tbody tr:hover { background:#202c39 } .money { color:var(--gold); font-weight:750; white-space:nowrap } .price{white-space:nowrap}.sale-scale{width:92px}.sale-scale__top{display:flex;justify-content:space-between;gap:5px;font-size:10px;color:#718096;margin-bottom:3px}.sale-scale__bar{height:3px;background:#344151;border-radius:99px;overflow:hidden}.sale-scale__fill{height:100%;border-radius:inherit;background:#e8bb49}.sale-scale__fill.full{background:#63d998}.income{display:inline-block;padding:3px 6px;border-radius:6px}.tier-high .income{color:#91f5be;background:#173d2c}.tier-mid .income{color:#ffe48a;background:#55451d}.tier-low .income{color:#c0cada;background:#303b4a}.destination{white-space:nowrap;vertical-align:middle}.destination__inner{display:flex;align-items:center;justify-content:space-between;gap:8px}.navi { display:inline-block; white-space:nowrap; cursor:pointer; border-radius:6px; padding:4px 5px }.navi:hover{background:#304058}.navi.copied{background:#e5f5ed;color:#19734c}.sold-btn { margin-left:auto;padding:4px 6px; font-size:11px; background:#315448;color:#d9ffe9}.is-sold{opacity:.42;filter:saturate(.35)}.is-sold td:not(:last-child){text-decoration:line-through}.is-sold .sold-btn{background:#674047;color:#ffe6e6}.item{display:flex;align-items:center;gap:7px;min-width:175px}.item-icon-wrap{display:grid;place-items:center;width:30px;height:30px;overflow:hidden;flex:0 0 30px}.item-icon{width:30px;height:30px;object-fit:contain;image-rendering:auto;background:#111923;border-radius:5px;transform:scale(1.38)}.item b{font-size:14px;font-weight:500}.item code{font-size:11px}.shop{display:block;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.empty { padding:50px; text-align:center; color:var(--muted) } code { color:#cce5ff; font-size:12px }
+    .footnote { margin-top:13px; font-size:13px }.hidden{display:none}
+    /* Светлая тема в стиле калькулятора заточки */
+    :root{--bg:#f4f6fa;--panel:#fff;--soft:#eef2f7;--line:#d8e0ea;--text:#1c2634;--muted:#657287;--accent:#27825b;--gold:#b87900;--danger:#c94242}
+    body{background:var(--bg);color:var(--text)}main{max-width:1260px;padding-top:28px}.hero{background:transparent;border:0;box-shadow:none;border-radius:0;padding:0 0 10px;align-items:center}.site-logo{width:72px;height:72px;object-fit:contain}.badge{display:none}h1{font-size:30px;letter-spacing:-.025em;margin-bottom:2px}.subtitle{font-size:14px;color:var(--muted);margin:0}.drop,.card,.table-wrap{background:#fff;box-shadow:none;border-color:var(--line)}.drop:hover,.drop.drag{background:#f1faf5;border-color:#62ad89}.drop.loaded{background:#f4fbf7;border-style:solid;border-color:#91cbaa}.drop h2{margin-bottom:0;font-size:18px}.drop-hint{padding:8px 11px;border-radius:7px;background:#27825b;color:#fff}.drop-hint:hover{filter:brightness(1.06)}.number,.label{color:var(--text)}.status{display:flex;align-items:center;gap:7px;margin-top:9px;color:#657287}.table-wrap{border-radius:10px}th{background:#edf1f6;color:#536176;border-bottom-color:#d8e0ea}tbody tr:hover{background:#f7f9fc}th,td{border-bottom-color:#e5eaf0}.tier-high .income{background:#e6f6ee;color:#19734c}.tier-mid .income{background:#fff4d7;color:#9a6800}.tier-low .income{background:#edf1f6;color:#526072}.sale-scale__bar{background:#e1e7ee}.sale-scale__fill{background:#d9aa32}.sale-scale__fill.full{background:#39a575}.navi{color:#326797}.navi:hover{background:#e6edf5}.sold-btn{background:#e3f3eb;color:#196a48}.is-sold .sold-btn{background:#f9e3e3;color:#a63434}.item-icon{background:#f1f4f7}.toast{background:#e6f6ee;color:#19734c;border-color:#80c9a5;box-shadow:0 12px 28px #20364a22}code{color:#326797}@media(max-width:800px){main{padding:18px 13px}.hero{display:block}.site-logo{margin-top:12px}.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.toolbar{align-items:stretch;flex-direction:column}}
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div><h1>Скупщики MOTR</h1><p class="subtitle">Выгодные продажи у скупщиков</p></div><img class="site-logo" src="https://dmitryermakov.ru/ro/img/logo.png" alt="MOTR">
+  </section>
+
+  <section class="grid">
+    <label class="drop" id="inventoryDrop"><input id="inventoryInput" type="file" accept=".html,.htm,.webarchive,text/html"><h2>1. Личный склад и инвентарь</h2><span class="drop-hint">Выбрать файл</span><small>HTML / Web Archive или перетащите файл сюда</small><div class="status"><span id="inventoryStatus">Файл ещё не загружен</span><button class="clear-upload" id="clearInventory" type="button" title="Очистить склад" aria-label="Очистить склад">Сбросить</button></div></label>
+    <label class="drop" id="vendingDrop"><input id="vendingInput" type="file" multiple accept=".html,.htm,.webarchive,text/html"><h2>2. Страницы скупщиков</h2><span class="drop-hint">Выбрать файлы</span><small>HTML / Web Archive или перетащите файлы сюда</small><div class="status"><span id="vendingStatus">Файлы ещё не загружены</span><button class="clear-upload" id="clearVending" type="button" title="Очистить страницы скупщиков" aria-label="Очистить страницы скупщиков">Сбросить</button></div></label>
+  </section>
+
+  <section class="stats">
+    <div class="card"><div class="label">Потенциальная выручка</div><div class="number" id="revenue">0 Z</div></div>
+    <div class="card"><div class="label">Позиций к продаже</div><div class="number" id="saleCount">0</div></div>
+  </section>
+
+  <section class="toolbar"><div><h2>Что можно продать сейчас</h2></div></section>
+  <div class="table-wrap"><table><thead><tr><th>Предмет</th><th>В наличии</th><th>Спрос</th><th>Цена</th><th>Доход</th><th>Торговец / магазин</th><th>Куда идти</th></tr></thead><tbody id="planRows"></tbody></table><div id="empty" class="empty">Загрузите обе части выгрузки, чтобы увидеть план продаж.</div></div>
+</main>
+<script>
+(() => {
+  const KEY = 'motr-vending-planner-v1';
+  const state = JSON.parse(localStorage.getItem(KEY) || '{"sold":{}}');
+  const $ = id => document.getElementById(id);
+  const fmt = n => new Intl.NumberFormat('ru-RU').format(n);
+  const clean = s => (s || '').replace(/\s+/g, ' ').trim();
+  const save = () => localStorage.setItem(KEY, JSON.stringify(state));
+  const stamp = x => x ? new Date(x).toLocaleString('ru-RU') : 'Пока не загружено';
+  const parseDoc = text => new DOMParser().parseFromString(text, 'text/html');
+  const itemLink = cell => cell && [...cell.querySelectorAll('a[href*="/database/items/"]')][0];
+  const num = text => Number((text || '').replace(/\D/g, '')) || 0;
+
+  function expandedRows(table) {
+    const carry = new Map(), result = [];
+    [...table.rows].slice(1).forEach(row => {
+      const grid = []; for (const [i, c] of [...carry]) { grid[i] = c.cell; c.left--; if (!c.left) carry.delete(i); }
+      let col = 0; [...row.cells].forEach(cell => { while (grid[col]) col++; const span = cell.colSpan || 1, rows = cell.rowSpan || 1; for (let j=0;j<span;j++) { grid[col+j]=cell; if (rows>1) carry.set(col+j,{cell,left:rows-1}); } col += span; });
+      result.push(grid);
+    }); return result;
+  }
+  function findTable(doc, headerWords) { return [...doc.querySelectorAll('table')].find(t => headerWords.every(w => clean(t.rows[0]?.textContent).includes(w))); }
+  function parseInventory(text) {
+    const doc=parseDoc(text), all=[];
+    [['#idTbl1','Инвентарь'],['#idTbl2','Кафра']].forEach(([sel,label]) => {
+      const table=doc.querySelector(sel) || findTable(doc,[label,'Кол-во']); if (!table) return;
+      expandedRows(table).forEach(g => { const link=itemLink(g[1]), qty=num(g[2]?.textContent); if(link && qty) { const id=(link.href.match(/items\/(\d+)/)||[])[1]; if(id) all.push({id,name:link.title||clean(link.textContent),qty}); } });
+    });
+    if (!all.length) throw Error('Не найдены таблицы «Инвентарь» и «Кафра».');
+    const byId={}; all.forEach(x => { const v=byId[x.id] ||= {id:x.id,name:x.name,qty:0}; v.qty+=x.qty; }); return Object.values(byId);
+  }
+  function rawText(html) { const t=document.createElement('textarea'); t.innerHTML=String(html||'').replace(/<[^>]*>/g,' '); return clean(t.value); }
+  function rawAttr(attrs, name) { const m=String(attrs||'').match(new RegExp('\\b'+name+'\\s*=\\s*["\\\']?(\\d+)','i')); return Number(m?.[1]||1); }
+  function parseVendingRaw(text, page) {
+    const marker=Math.max(text.indexOf('Показаны результаты поиска'),text.indexOf('Всего результатов:')); if(marker<0) return [];
+    const part=text.slice(marker), start=part.search(/<table\b[^>]*>/i); if(start<0) return [];
+    const table=part.slice(start,part.search(/<\/table>/i)+8), rows=[...table.matchAll(/<tr\b[^>]*class\s*=\s*["\']top[12]["\'][^>]*>([\s\S]*?)<\/tr>/gi)].map(m=>m[1]);
+    const carry=new Map(), out=[];
+    rows.forEach(row => { const grid=[]; for(const [i,c] of [...carry]) { grid[i]=c.cell; if(--c.left===0) carry.delete(i); }
+      let col=0; [...row.matchAll(/<td\b([^>]*)>([\s\S]*?)<\/td>/gi)].forEach(m=>{ while(grid[col]) col++; const cell={attrs:m[1],html:m[2]}, span=rawAttr(m[1],'colspan'), spanRows=rawAttr(m[1],'rowspan'); for(let j=0;j<span;j++){grid[col+j]=cell;if(spanRows>1)carry.set(col+j,{cell,left:spanRows-1});} col+=span; });
+      const item=grid[1]?.html, link=item?.match(/href\s*=\s*["\'][^"\']*\/database\/items\/(\d+)[^"\']*["\'][\s\S]*?title\s*=\s*["\']([^"\']*)["\']/i), qty=num(rawText(grid[4]?.html)), price=num(rawText(grid[5]?.html));
+      if(link && qty && price) out.push({id:link[1],name:rawText(link[2]),trader:rawText(grid[2]?.html),shop:rawText(grid[3]?.html),navi:rawText(grid[0]?.html),qty,price,page});
+    }); return out;
+  }
+  function parseVending(text, page) {
+    const doc=parseDoc(text), table=findTable(doc,['Место','Предмет','Кол-во','Цена']); if(!table) { const fallback=parseVendingRaw(text,page); if(fallback.length)return fallback; throw Error('Не найдена таблица вендинга. Нужна страница в режиме «Скупка».'); }
+    const out=[]; expandedRows(table).forEach(g => { const link=itemLink(g[1]), qty=num(g[4]?.textContent), price=num(g[5]?.textContent); if(!link || !qty || !price) return; const id=(link.href.match(/items\/(\d+)/)||[])[1]; if(id) out.push({id,name:link.title||clean(link.textContent),trader:clean(g[2]?.textContent),shop:clean(g[3]?.textContent),navi:clean(g[0]?.textContent),qty,price,page}); }); return out.length ? out : parseVendingRaw(text,page);
+  }
+  function plans() {
+    if(!state.inventory?.items || !state.vending?.orders) return [];
+    const stock=Object.fromEntries(state.inventory.items.map(x=>[x.id,{...x, qty:x.qty}]));
+    const groups={}; state.vending.orders.forEach(o=>{ (groups[o.id] ||= []).push(o); });
+    const p=[]; Object.entries(groups).forEach(([id,orders])=>{ let left=stock[id]?.qty||0; orders.sort((a,b)=>b.price-a.price).forEach(o=>{ const sell=Math.min(left,o.qty); left-=sell; if(sell) p.push({...o,available:stock[id].qty,sell,revenue:sell*o.price,key:orderKey(o)}); }); });
+    return p.sort((a,b)=>b.revenue-a.revenue || b.price-a.price);
+  }
+  function orderKey(o){ return [o.id,o.trader,o.shop,o.navi,o.price,o.qty,o.page].join('|'); }
+  function status(){ const inv=!!state.inventory, vend=!!state.vending; $('inventoryDrop').classList.toggle('loaded',inv); $('vendingDrop').classList.toggle('loaded',vend); $('inventoryStatus').innerHTML=inv ? `<span class="ok">✓ ${state.inventory.items.length} ID · ${stamp(state.inventory.updatedAt)}</span>` : 'Файл ещё не загружен'; if(!vend){$('vendingStatus').textContent='Файлы ещё не загружены';return} $('vendingStatus').innerHTML=`<span class="ok">✓ ${state.vending.orders.length} заявок · ${state.vending.pages} стр. · ${stamp(state.vending.updatedAt)}</span>`; }
+  function render(){ status(); const all=plans(), rows=all, remaining=all.filter(x=>!state.sold?.[x.key]); $('revenue').textContent=fmt(remaining.reduce((s,x)=>s+x.revenue,0))+' Z'; $('saleCount').textContent=remaining.length; $('empty').classList.toggle('hidden',!!rows.length); $('planRows').innerHTML=rows.map(x=>{const done=!!state.sold?.[x.key],tier=x.revenue>=1000000?'tier-high':x.revenue>=200000?'tier-mid':'tier-low',percent=Math.min(100,Math.round(x.sell/x.available*100));return `<tr class="${tier} ${done?'is-sold':''}"><td><span class="item"><span class="item-icon-wrap"><img class="item-icon" src="https://file5s.ratemyserver.net/items/large/${encodeURIComponent(x.id)}.gif" alt="" onerror="this.style.visibility='hidden'"></span><span><b>${esc(x.name)}</b><br><code>${x.id}</code></span></span></td><td>${fmt(x.available)}</td><td><div class="sale-scale" title="Можно продать ${fmt(x.sell)} из ${fmt(x.available)}"><div class="sale-scale__top"><span>${fmt(x.sell)} шт.</span><b>${percent}%</b></div><div class="sale-scale__bar"><div class="sale-scale__fill ${percent===100?'full':''}" style="width:${percent}%"></div></div></div></td><td class="price">${fmt(x.price)} Z</td><td class="money"><span class="income">${fmt(x.revenue)} Z</span></td><td><b>${esc(x.trader)}</b><small class="shop" title="${esc(x.shop || '')}">${esc(x.shop || '—')}</small></td><td class="destination"><div class="destination__inner"><span class="navi" title="Нажмите, чтобы скопировать" data-navi="${encodeURIComponent(x.navi)}"><code>${esc(x.navi)}</code></span><button class="sold-btn" data-sold="${encodeURIComponent(x.key)}">${done?'Вернуть':'Продано'}</button></div></td></tr>`}).join(''); }
+  function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  async function readFiles(files){ return Promise.all([...files].map(async f=>({name:f.name,text:await f.text()}))); }
+  $('inventoryInput').addEventListener('change',async e=>{ try { const f=e.target.files[0]; if(!f)return; state.inventory={items:parseInventory(await f.text()),updatedAt:Date.now(),file:f.name}; save(); render(); } catch(err){alert(err.message)} });
+  $('vendingInput').addEventListener('change',async e=>{ try { const files=await readFiles(e.target.files); if(!files.length)return; const perPage=files.map((f,i)=>parseVending(f.text,i+1)), orders=perPage.flat(); if(!orders.length)throw Error('Заявки скупщиков не найдены.'); state.vending={orders,pages:files.length,counts:perPage.map(x=>x.length),updatedAt:Date.now(),files:files.map(f=>f.name)}; state.sold={}; save(); render(); } catch(err){alert(err.message)} });
+  document.addEventListener('click',e=>{ const navi=e.target.closest('.navi'); if(navi) navigator.clipboard.writeText(decodeURIComponent(navi.dataset.navi)).then(()=>{const code=navi.querySelector('code'),original=code.textContent;navi.classList.add('copied');code.textContent='Скопировано в буфер';setTimeout(()=>{code.textContent=original;navi.classList.remove('copied')},1200)}); const sold=e.target.closest('.sold-btn'); if(sold){const key=decodeURIComponent(sold.dataset.sold);if(state.sold?.[key])delete state.sold[key];else state.sold[key]={at:Date.now()};save();render();} });
+  [['clearInventory','inventory'],['clearVending','vending']].forEach(([button,key])=>{$(button).onclick=e=>{e.preventDefault();e.stopPropagation();delete state[key];state.sold={};save();render();}});
+  [['inventoryDrop','inventoryInput'],['vendingDrop','vendingInput']].forEach(([d,i])=>{const el=$(d);['dragenter','dragover'].forEach(t=>el.addEventListener(t,e=>{e.preventDefault();el.classList.add('drag')}));['dragleave','drop'].forEach(t=>el.addEventListener(t,e=>{e.preventDefault();el.classList.remove('drag')}));el.addEventListener('drop',e=>{const input=$(i); input.files=e.dataTransfer.files; input.dispatchEvent(new Event('change'))});});
+  render();
+})();
+</script>
+</body>
+</html>
+
